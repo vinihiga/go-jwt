@@ -1,7 +1,9 @@
 package pkg
 
 import (
+	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 )
 
@@ -9,15 +11,20 @@ type JwtEncoder struct {
 	SecretKey string
 }
 
-func (instance *JwtEncoder) NewJwt(config string, json string) string {
-	var header = sha256.Sum256([]byte(config))
-	var encodedHeader = hex.EncodeToString(header[:])
+func (instance *JwtEncoder) NewJwt(header string, payload string) string {
+	var encodedHeader = base64.StdEncoding.EncodeToString([]byte(header))
+	var encodedPayload = base64.StdEncoding.EncodeToString([]byte(payload))
+	encodedSignature := instance.sign(encodedHeader, encodedPayload)
 
-	var claim = sha256.Sum256([]byte(json))
-	var encodedClaim = hex.EncodeToString(claim[:])
+	return encodedHeader + "." + encodedPayload + "." + encodedSignature
+}
 
-	var signature = sha256.Sum256([]byte(instance.SecretKey))
-	var encodedSignature = hex.EncodeToString(signature[:])
+func (instance *JwtEncoder) sign(encodedHeader string, encodedPayload string) string {
+	hmac := hmac.New(sha256.New, []byte(instance.SecretKey))
+	var fullEncode string = encodedHeader + "." + encodedPayload
+	hmac.Write([]byte(fullEncode))
+	signature := hmac.Sum(nil)
+	encodedSignature := hex.EncodeToString(signature)
 
-	return encodedHeader + "." + encodedClaim + "." + encodedSignature
+	return encodedSignature
 }

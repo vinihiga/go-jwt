@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	var config string = "{ \"typ\": \"JWT\", \"alg\": \"HS256\" }"
-	var mock string = "{ \"foo\": \"bar\" }"
+	var header string = "{ \"typ\": \"JWT\", \"alg\": \"HS256\" }"
+	var payload string = "{ \"foo\": \"bar\" }"
 
 	fmt.Println("<<< Running Mocked JWT Generator >>>")
 	fmt.Println("Edit cmd/main.go to test and customize JWT generation")
@@ -17,7 +17,7 @@ func main() {
 		SecretKey: "test123",
 	}
 
-	var encoded string = encoder.NewJwt(config, mock)
+	var encoded string = encoder.NewJwt(header, payload)
 
 	fmt.Println("<<< Result >>>")
 	fmt.Println(encoded)
