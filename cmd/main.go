@@ -17,8 +17,18 @@ func main() {
 		SecretKey: "test123",
 	}
 
+	var decoder pkg.JwtDecoder = pkg.JwtDecoder{
+		SecretKey: "test123",
+	}
+
 	var encoded string = encoder.NewJwt(header, payload)
 
-	fmt.Println("<<< Result >>>")
+	fmt.Println("\n<<< Result >>>")
 	fmt.Println(encoded)
+	fmt.Println()
+
+	fmt.Println("<<< Making sure we can validate >>>")
+	isEqual, _ := decoder.Validate(encoded)
+
+	fmt.Printf("Is equal: %t", isEqual)
 }

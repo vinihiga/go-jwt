@@ -14,12 +14,12 @@ type JwtEncoder struct {
 func (instance *JwtEncoder) NewJwt(header string, payload string) string {
 	var encodedHeader = base64.StdEncoding.EncodeToString([]byte(header))
 	var encodedPayload = base64.StdEncoding.EncodeToString([]byte(payload))
-	encodedSignature := instance.sign(encodedHeader, encodedPayload)
+	encodedSignature := instance.Sign(encodedHeader, encodedPayload)
 
 	return encodedHeader + "." + encodedPayload + "." + encodedSignature
 }
 
-func (instance *JwtEncoder) sign(encodedHeader string, encodedPayload string) string {
+func (instance *JwtEncoder) Sign(encodedHeader string, encodedPayload string) string {
 	hmac := hmac.New(sha256.New, []byte(instance.SecretKey))
 	var fullEncode string = encodedHeader + "." + encodedPayload
 	hmac.Write([]byte(fullEncode))
