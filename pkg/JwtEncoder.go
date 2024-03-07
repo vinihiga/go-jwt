@@ -5,15 +5,21 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
+
+	"github.com/vinihiga/go-jwt/pkg/models"
 )
 
 type JwtEncoder struct {
 	SecretKey string
 }
 
-func (instance *JwtEncoder) NewJwt(header string, payload string) string {
+func (instance *JwtEncoder) NewJwt(header string, payload models.ClaimsModel) string {
 	var encodedHeader = base64.StdEncoding.EncodeToString([]byte(header))
-	var encodedPayload = base64.StdEncoding.EncodeToString([]byte(payload))
+
+	var json, _ = json.Marshal(payload)
+	var encodedPayload = base64.StdEncoding.EncodeToString(json)
+
 	encodedSignature := instance.Sign(encodedHeader, encodedPayload)
 
 	return encodedHeader + "." + encodedPayload + "." + encodedSignature

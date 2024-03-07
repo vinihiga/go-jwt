@@ -2,13 +2,17 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	pkg "github.com/vinihiga/go-jwt/pkg"
+	"github.com/vinihiga/go-jwt/pkg/models"
 )
 
 func main() {
 	var header string = "{ \"typ\": \"JWT\", \"alg\": \"HS256\" }"
-	var payload string = "{ \"foo\": \"bar\" }"
+	var payload models.ClaimsModel = models.ClaimsModel{
+		Exp: time.Now().UnixMilli() + (10 * 1000), // Time.Now() in ms + 10 sec
+	}
 
 	fmt.Println("<<< Running Mocked JWT Generator >>>")
 	fmt.Println("Edit cmd/main.go to test and customize JWT generation")
@@ -30,5 +34,5 @@ func main() {
 	fmt.Println("<<< Making sure we can validate >>>")
 	isEqual, _ := decoder.Validate(encoded)
 
-	fmt.Printf("Is equal: %t", isEqual)
+	fmt.Printf("Is equal and valid: %t", isEqual)
 }
