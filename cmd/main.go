@@ -9,9 +9,8 @@ import (
 )
 
 func main() {
-	var header string = "{ \"typ\": \"JWT\", \"alg\": \"HS256\" }"
 	var payload models.ClaimsModel = models.ClaimsModel{
-		Exp: time.Now().UnixMilli() + (10 * 1000), // Time.Now() in ms + 10 sec
+		Exp: time.Now().UnixMilli() + (10 * 1000), // Time.Now() in miliseconds + 10 seconds
 	}
 
 	fmt.Println("<<< Running Mocked JWT Generator >>>")
@@ -19,19 +18,21 @@ func main() {
 
 	var encoder pkg.JwtEncoder = pkg.JwtEncoder{
 		SecretKey: "test123",
+		Algorithm: "HS256",
 	}
 
 	var decoder pkg.JwtDecoder = pkg.JwtDecoder{
 		SecretKey: "test123",
+		Algorithm: "HS256",
 	}
 
-	var encoded string = encoder.NewJwt(header, payload)
+	var encoded string = encoder.NewJwt(payload)
 
 	fmt.Println("\n<<< Result >>>")
 	fmt.Println(encoded)
 	fmt.Println()
 
-	fmt.Println("<<< Making sure we can validate >>>")
+	fmt.Println("<<< Making sure we can is valid >>>")
 	isEqual, _ := decoder.Validate(encoded)
 
 	fmt.Printf("Is equal and valid: %t", isEqual)
